@@ -87,7 +87,6 @@ func (s *Endpoint) Connect() error {
 	return nil
 }
 
-// CliLogin does the special login sequence needed to login to PSS cli.
 func (s *Endpoint) cliLogin() error {
 	var err error
 
@@ -182,15 +181,12 @@ func (s *Endpoint) Run(arg string) (string, error) {
 	return responseBuf.String(), nil
 }
 
-// Disconnect closes the ssh sessoin and connection.
+// Disconnect closes the ssh sessoin.
 func (s *Endpoint) Disconnect() {
 
-	closePayload := `
-	<rpc message-id="103" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+	closePayload := `<rpc message-id="103" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   		<close-session/>
-	</rpc>
-	]]>]]>
-	`
+	</rpc>]]>]]>`
 	s.Run(closePayload)
 	s.Session.Close()
 	s.Client.Close()
