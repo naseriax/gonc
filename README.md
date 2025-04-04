@@ -2,7 +2,9 @@
 NETCONF client for nokia 1830 PSS equipment.
 
 ## usage
-`./gonc -ip 10.10.10.10 -password admin -username admin -port 830 -file sample_payload_file.xml -output output.xml`
+`./gonc -ip 10.10.10.10 -password admin -username admin -port 830 -file payloads/otdr.xml -output output.xml -filter "/rpc-reply/data/terminal-device/logical-channels/channel[start-with(index,'10115')]"`
+
+- `-filter is a feature to add the unsupported start-with filter to the result. It does the filtering by doing post-processing on the response from NE`
 
 ### What is NETCONF?
 
