@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"runtime/debug"
 	"strings"
 )
 
@@ -21,6 +23,8 @@ type Config struct {
 }
 
 func main() {
+	defer customPanicHandler()
+
 	config := Config{}
 	flag.StringVar(&config.IP, "ip", "", "IP address of the NETCONF device (required)")
 	flag.StringVar(&config.Port, "port", "830", "Port number for NETCONF connection")
@@ -190,4 +194,32 @@ func formatXML(data string, removeBlankLines bool) string {
 func indentString(level int) string {
 	const indentUnit = "  "
 	return strings.Repeat(indentUnit, level)
+}
+
+func removePaths(stack []byte) []byte {
+	lines := bytes.Split(stack, []byte("\n"))
+	for i, line := range lines {
+		if idx := bytes.LastIndex(line, []byte("/go/")); idx != -1 {
+			lines[i] = line[idx+4:]
+		} else if idx := bytes.Index(line, []byte(":")); idx != -1 {
+			lines[i] = line[idx:]
+		}
+	}
+	return bytes.Join(lines, []byte("\n"))
+}
+
+func customPanicHandler() {
+	if r := recover(); r != nil {
+		// Get the stack trace
+		stack := debug.Stack()
+
+		// Remove file paths from the stack trace
+		sanitizedStack := removePaths(stack)
+
+		// Log or print the sanitized stack trace
+		fmt.Printf("Panic: %v\n%s", r, sanitizedStack)
+
+		// Optionally, exit the program
+		os.Exit(1)
+	}
 }
