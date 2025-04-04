@@ -16,7 +16,6 @@ type Config struct {
 	Path     string
 	File     string
 	Output   string
-	Mode     string
 	Key      string
 	Timeout  int
 }
@@ -28,7 +27,6 @@ func main() {
 	flag.StringVar(&config.Username, "username", "admin", "Username for authentication")
 	flag.StringVar(&config.Password, "password", "", "Password for authentication (required)")
 	flag.StringVar(&config.File, "file", "", "Path to XML file containing NETCONF RPC payload")
-	flag.StringVar(&config.Mode, "mode", "exec", "Execution modes: get_capabilities, exec ,get_session_id")
 	flag.StringVar(&config.Output, "output", "", "Path to output file for NETCONF response (optional)")
 	flag.StringVar(&config.Key, "key", "", "ssh key file(optional)")
 	flag.IntVar(&config.Timeout, "timeout", 30, "Connection timeout in seconds")
